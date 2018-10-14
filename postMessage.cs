@@ -8,7 +8,7 @@ public class postMessage : MonoBehaviour
     // upload String to HTTP server
     void Start()
     {
-        StartCoroutine(PostRequest("http:///www.yoururl.com"));
+        StartCoroutine(PostRequest("http://localhost:8080/"));
     }
 
     IEnumerator PostRequest(string url)
