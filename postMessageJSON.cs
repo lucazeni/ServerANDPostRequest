@@ -7,7 +7,7 @@ public class postMessageJSON : MonoBehaviour {
     // upload JSON to HTTP server
     void Start()
     {
-        StartCoroutine(PostRequest("http:///www.yoururl.com", "your json")); 
+        StartCoroutine(PostRequest("http://localhost:8080/", "your json")); 
     }
 
     IEnumerator PostRequest(string url, string json) // URL + JSON
