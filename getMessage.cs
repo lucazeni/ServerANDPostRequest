@@ -7,7 +7,7 @@ public class getMessage : MonoBehaviour {
     //get data from HTTP server
     void Start()
     {
-        StartCoroutine(GetRequest("http:///www.yoururl.com"));
+        StartCoroutine(GetRequest("http://localhost:8080/"));
     }
 
     IEnumerator GetRequest(string uri)
