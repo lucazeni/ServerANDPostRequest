@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class postMessageJSON : MonoBehaviour {
-    // upload JSON to HTTP server
+    // upload JSON to HTTP server //
     void Start()
     {
         StartCoroutine(PostRequest("http://localhost:8080/", "your json")); 
