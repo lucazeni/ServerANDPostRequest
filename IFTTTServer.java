@@ -64,7 +64,7 @@ public class IFTTTServer {
             xchg.close();
             return;
           } */
-      
+      ///////////////////////////////////////////////////////--IMPORTANT--///////////////////////////////////////////////////////////
   	  // obtain POST text as a string
           int contentLength = Integer.parseInt(requestHeaders.getFirst("Content-length"));
           InputStream is = xchg.getRequestBody();
@@ -73,6 +73,22 @@ public class IFTTTServer {
           String s = new String(data);
           System.out.println(s);
 
+		  // string recived in following format (id + " " + fileName + " " + JSONString)
+		  // seperated the white space and isolate the required information
+
+		  int firstSpace = s.indexOf(" ");
+		  int secondSpace = s.indexOf(" ", firstSpace + 1);
+		 
+
+		  String idName = s.substring(0,firstSpace);  // check if directory exists, if not create one 
+		  String fileName = s.substring(firstSpace + 1,secondSpace); // check if file is null if not create file
+		  String JSONString = s.substring(secondSpace + 1, s.length());  // fill contents of file with JSON string
+
+		  System.out.println(idName); 
+		  System.out.println(fileName); 
+		  System.out.println(JSONString);
+		 
+	   ///////////////////////////////////////////////////////--IMPORTANT--////////////////////////////////////////////////////////////
           // update the map
           synchronized(events) {
             events.put(uri.toString(), s);
