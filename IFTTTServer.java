@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
+import java.io.File;
+import java.io.FileWriter;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
@@ -87,6 +89,14 @@ public class IFTTTServer {
 		  System.out.println(idName); 
 		  System.out.println(fileName); 
 		  System.out.println(JSONString);
+
+		  File folder = new File(idName); 
+		  folder.mkdir();
+		  File file = new File(folder, fileName + ".json");
+		  file.createNewFile(); 
+		  FileWriter fw = new FileWriter(file, false);
+		  fw.write(JSONString);
+		  fw.close();
 		 
 	   ///////////////////////////////////////////////////////--IMPORTANT--////////////////////////////////////////////////////////////
           // update the map
