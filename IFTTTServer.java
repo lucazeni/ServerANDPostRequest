@@ -87,10 +87,9 @@ public class IFTTTServer {
 		  String fileName = s.substring(firstSpace + 1,secondSpace); 
 		  String JSONString = s.substring(secondSpace + 1, s.length());  
 
-		  System.out.println(idName); 
-		  System.out.println(fileName); 
-		  System.out.println(JSONString);
-
+		  System.out.println("Id Name: " + idName); 
+		  System.out.println("File Name: " + fileName); 
+		  System.out.println("JSON String: " + JSONString);
 		  File folder = new File(idName); 
 
 		/*  String copy = idName;

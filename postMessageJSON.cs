@@ -6,10 +6,13 @@ using UnityEngine.Networking;
 
 public class postMessageJSON : MonoBehaviour {
     // upload JSON to HTTP server //
-    
+    [SerializeField] String uriAddress;
+    [SerializeField] String idName;
+    [SerializeField] String fileName;
+    [SerializeField] String jsonExampleText;
     void Start()
     {
-        StartCoroutine(PostRequest("http://192.168.0.20:8080/","id", "LucaZ", "Sample Text 12345 Hello World"));  
+        StartCoroutine(PostRequest(uriAddress, idName, fileName, jsonExampleText));  
     }
 
     IEnumerator PostRequest(string url, string id, string fileName, string json)
