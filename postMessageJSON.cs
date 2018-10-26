@@ -6,28 +6,19 @@ using UnityEngine.Networking;
 
 public class postMessageJSON : MonoBehaviour {
     // upload JSON to HTTP server //
+    
     void Start()
     {
-        StartCoroutine(PostRequest("http://192.168.0.23:8080/","Luca_Zeni", "Test1234", "Hello My Name Is Luca Zeni And I Attend York Univeristy"));  // example on how to use method
+        StartCoroutine(PostRequest("http://192.168.0.20:8080/","id", "File Name", "Sample Text 12345 Hello World"));  
     }
 
     IEnumerator PostRequest(string url, string id, string fileName, string json)
     {
-        if(id.Contains(" "))
-        {
-            throw new Exception("No spaces allowed in id name");
-        }
-        if (fileName.Contains(" "))
-        {
-            throw new Exception("No spaces allowed in file name");
-        }
-        else if(fileName.Equals("") || fileName == null)
-        {
-            throw new Exception("File name null");
-        }
+        String encodedID = Uri.EscapeUriString(id); // encodes any non valid characters such as spaces, dashes etc
+        String encodedFileName = Uri.EscapeUriString(fileName); // encodes any non valid characters such as spaces, dashes etc
 
         var request = new UnityWebRequest(url, "POST"); // type of HTTPREQUEST POST in this case
-        byte[] infoToSend = new System.Text.UTF8Encoding().GetBytes(id + " " + fileName + " " + json); 
+        byte[] infoToSend = new System.Text.UTF8Encoding().GetBytes(encodedID + " " + encodedFileName + " " + json); //payload
 
         request.uploadHandler = (UploadHandler)new UploadHandlerRaw(infoToSend); 
         
