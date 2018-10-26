@@ -9,7 +9,7 @@ public class postMessageJSON : MonoBehaviour {
     
     void Start()
     {
-        StartCoroutine(PostRequest("http://192.168.0.20:8080/","id", "File Name", "Sample Text 12345 Hello World"));  
+        StartCoroutine(PostRequest("http://192.168.0.20:8080/","id", "LucaZ", "Sample Text 12345 Hello World"));  
     }
 
     IEnumerator PostRequest(string url, string id, string fileName, string json)
