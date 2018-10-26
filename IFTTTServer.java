@@ -15,13 +15,14 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import java.net.HttpURLConnection;
+import java.util.Random;
 
 
 public class IFTTTServer {
   public Map<String,String> events = new HashMap<String,String>();
   public final String PAGESTART = "<html><body><center><h1>Known values</h1></center>><body><center><table>";
   public final String PAGEEND = "</table></center></body></html>";
-
+  
   public class Handler implements HttpHandler {
     public void handle(HttpExchange xchg) throws IOException {
       if (xchg.getRequestMethod().equalsIgnoreCase("GET")) {
@@ -51,54 +52,64 @@ public class IFTTTServer {
   	  // expect POST as a JSON
           URI uri = xchg.getRequestURI();
           String kind = requestHeaders.getFirst("Content-type");
-     /*     if(!"application/json".equals(kind)) {
+          if(!"application/json".equals(kind)) {
   	  System.out.println("bad application kind " + kind);
             xchg.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             xchg.close();
             return;
-          } */
+          } 
   
   	  // expect URI in IFTTT format
           String[] parts = uri.toString().split("/");
-       /*   if(parts.length < 2) {
+          if(parts.length < 0) {
   	  System.out.println("bad application uri " + uri);
             xchg.sendResponseHeaders(HttpURLConnection.HTTP_BAD_REQUEST, 0);
             xchg.close();
             return;
-          } */
-      ///////////////////////////////////////////////////////--IMPORTANT--///////////////////////////////////////////////////////////
+          } 
+      ///////////////////////////////////////////////////////--LZ--///////////////////////////////////////////////////////////
   	  // obtain POST text as a string
           int contentLength = Integer.parseInt(requestHeaders.getFirst("Content-length"));
           InputStream is = xchg.getRequestBody();
           byte[] data = new byte[contentLength];
           int length = is.read(data);
           String s = new String(data);
-          System.out.println(s);
-
-		  // string recived in following format (id + " " + fileName + " " + JSONString)
+         
+		  // payload recived in following format (id + " " + fileName + " " + JSONString)
 		  // seperated the white space and isolate the required information
 
 		  int firstSpace = s.indexOf(" ");
 		  int secondSpace = s.indexOf(" ", firstSpace + 1);
 		 
 
-		  String idName = s.substring(0,firstSpace);  // check if directory exists, if not create one 
-		  String fileName = s.substring(firstSpace + 1,secondSpace); // check if file is null if not create file
-		  String JSONString = s.substring(secondSpace + 1, s.length());  // fill contents of file with JSON string
+		  String idName = s.substring(0,firstSpace);  
+		  String fileName = s.substring(firstSpace + 1,secondSpace); 
+		  String JSONString = s.substring(secondSpace + 1, s.length());  
 
 		  System.out.println(idName); 
 		  System.out.println(fileName); 
 		  System.out.println(JSONString);
 
 		  File folder = new File(idName); 
-		  folder.mkdir();
+
+		/*  String copy = idName;
+		  int count = 1;
+		  while(folder.exists()) // checks if folder already exists, assign new folder name (e.g file --> file(1))
+		  {
+		  	 Random rand = new Random();
+			 
+			 idName = copy + "(" + count + ")";
+			 folder = new File(idName);
+			 count++;
+		  }*/
+		  folder.mkdirs();
 		  File file = new File(folder, fileName + ".json");
 		  file.createNewFile(); 
 		  FileWriter fw = new FileWriter(file, false);
 		  fw.write(JSONString);
 		  fw.close();
 		 
-	   ///////////////////////////////////////////////////////--IMPORTANT--////////////////////////////////////////////////////////////
+	   ///////////////////////////////////////////////////////--LZ--////////////////////////////////////////////////////////////
           // update the map
           synchronized(events) {
             events.put(uri.toString(), s);
