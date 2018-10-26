@@ -16,6 +16,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import java.net.HttpURLConnection;
 import java.util.Random;
+import java.net.InetAddress;
 
 
 public class IFTTTServer {
@@ -136,6 +137,12 @@ public class IFTTTServer {
   public static void main(String[] args) throws IOException {
     final int PORT = 8080;
     int port = PORT;
+    InetAddress IP=InetAddress.getLocalHost();
+    String ipAddress = IP.toString();
+    int x = ipAddress.indexOf('/');
+    ipAddress = ipAddress.substring(x + 1,ipAddress.length());
+    ipAddress = "URI ADDRESS:http://" + ipAddress + ":" + port + "/";
+    System.out.println(ipAddress);
     switch(args.length) {
     case 0:
       break;
