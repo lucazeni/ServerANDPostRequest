@@ -17,23 +17,28 @@ import com.sun.net.httpserver.HttpServer;
 import java.net.HttpURLConnection;
 import java.util.Random;
 import java.net.InetAddress;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 
 
 public class IFTTTServer {
   public Map<String,String> events = new HashMap<String,String>();
-  public final String PAGESTART = "<html><body><center><h1>Known values</h1></center>><body><center><table>";
+  public final String PAGESTART = "<html><body><center><h1>Folder Contents</h1></center>><body><center><table>";
   public final String PAGEEND = "</table></center></body></html>";
   
   public class Handler implements HttpHandler {
     public void handle(HttpExchange xchg) throws IOException {
+		
       if (xchg.getRequestMethod().equalsIgnoreCase("GET")) {
+
+
         try {
           StringBuffer sb = new StringBuffer(PAGESTART);
           synchronized(events) {
             for(String s: events.keySet()) 
-              sb.append("<tr><td>" + s + "</td><td>" + events.get(s) + "</td></tr>");
+              sb.append("<pre>" + events.get(s) + "</pre>");
           }
-  	  String s = sb.toString();
+  		  String s = sb.toString();
           xchg.sendResponseHeaders(HttpURLConnection.HTTP_OK, s.length());
           OutputStream os = xchg.getResponseBody();
           os.write(s.getBytes());
@@ -46,7 +51,8 @@ public class IFTTTServer {
         }
       }
           
-      if (xchg.getRequestMethod().equalsIgnoreCase("POST")) {
+      if (xchg.getRequestMethod().equalsIgnoreCase("POST")) 
+	  {
         try {
           Headers requestHeaders = xchg.getRequestHeaders();
   
@@ -59,7 +65,6 @@ public class IFTTTServer {
             xchg.close();
             return;
           } 
-  
   	  // expect URI in IFTTT format
           String[] parts = uri.toString().split("/");
           if(parts.length < 0) {
@@ -75,7 +80,8 @@ public class IFTTTServer {
           byte[] data = new byte[contentLength];
           int length = is.read(data);
           String s = new String(data);
-         
+		  
+		  
 		  // payload recived in following format (id + " " + fileName + " " + JSONString)
 		  // seperated the white space and isolate the required information
 
@@ -109,12 +115,17 @@ public class IFTTTServer {
 		  fw.write(JSONString);
 		  fw.close();
 		 
-	   ///////////////////////////////////////////////////////--LZ--////////////////////////////////////////////////////////////
+	   
           // update the map
-          synchronized(events) {
-            events.put(uri.toString(), s);
+		 IFTTTServer obj = new IFTTTServer();
+		String command = "ls -Rl"; // list all the files in the directory
+		String output = obj.executeCommand(command);
+		//System.out.println(output);
+          synchronized(events) { // open browser and type localhost:8080 to see contents of folder
+		    
+            events.put(uri.toString(), output);
           }
-  
+  ///////////////////////////////////////////////////////--LZ--////////////////////////////////////////////////////////////
           xchg.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
           xchg.close();
    
@@ -132,7 +143,30 @@ public class IFTTTServer {
     server.createContext("/", new Handler());
     server.start();
   }
+  private String executeCommand(String command) {
 
+		StringBuffer output = new StringBuffer();
+
+		Process p;
+		try {
+			p = Runtime.getRuntime().exec(command);
+			p.waitFor();
+			BufferedReader reader = 
+                            new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                        String line = "";			
+			while ((line = reader.readLine())!= null) {
+				output.append(line + "\n");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return output.toString();
+
+
+	}
   public static void main(String[] args) throws IOException {
     final int PORT = 8080;
     int port = PORT;
