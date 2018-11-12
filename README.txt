@@ -70,9 +70,6 @@ browser and typing the following:
 ______________________________________________
 If connecting to the network with a phone 
 ensure that your mobile network is turned off.
-
-Ive included a sample apk in this respository
-that sends a simple post request to the server.
 _______________________________________________
 
 
